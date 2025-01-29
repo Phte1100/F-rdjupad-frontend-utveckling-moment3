@@ -1,5 +1,6 @@
-import React from 'react';
+import React from 'react'; // Importerar React, vilket krävs för att använda JSX
 
+// Den tar emot en prop "title" som är en sträng
 function Banner({ title }: { title: string }) {
   return (
     <div
@@ -18,4 +19,4 @@ function Banner({ title }: { title: string }) {
   );
 }
 
-export default Banner;
+export default Banner; // Exporterar komponenten så att den kan användas i andra komponenter
