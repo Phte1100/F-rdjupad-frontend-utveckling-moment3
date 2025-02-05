@@ -1,5 +1,3 @@
-import React from 'react'; // Importerar React, vilket krävs för att använda JSX
-
 // Den tar emot en prop "title" som är en sträng
 function Banner({ title }: { title: string }) {
   return (

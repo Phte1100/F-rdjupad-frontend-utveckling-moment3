@@ -4,7 +4,7 @@ function List() {
       { name: "Fiske", rating: 10, season: true }, 
       { name: "Discgolf", rating: 7, season: true }, 
       { name: "Slalom", rating: 8, season: false }, 
-      { name: "Fotboll", rating: 5, season: false },
+      { name: "Fotboll", rating: 5, season: true },
     ];
 
   return (
