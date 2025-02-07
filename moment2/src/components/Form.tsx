@@ -36,10 +36,32 @@ const Form = () => {
 
     const submitForm = async (event: React.FormEvent) => {
         event.preventDefault();
-
+    
         try {
             await validationSchema.validate(formData, { abortEarly: false });
+    
+            // Skicka POST-anrop till backend
+            const response = await fetch('https://f-rdjupad-frontend-utveckling-moment-2.onrender.com/todos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Misslyckades att spara Todo');
+            }
+    
             console.log('Todo inlagd', formData);
+    
+            // Återställ formuläret efter lyckad POST
+            setFormData({
+                title: '',
+                desc: '',
+                status: 'not_started',
+            });
+    
             setErrors({});
         } catch (error) {
             if (error instanceof Yup.ValidationError) {
@@ -49,9 +71,18 @@ const Form = () => {
                     validationErrors[prop] = err.message;
                 });
                 setErrors(validationErrors);
+            } else {
+                console.error("POST-fel:", error);
             }
         }
     };
+
+    const statusOptions = [
+        { value: "not_started", label: "Ej påbörjad" },
+        { value: "in_progress", label: "Pågående" },
+        { value: "completed", label: "Avklarad" }
+    ];
+    
 
     return (
         <form onSubmit={submitForm}>
@@ -82,8 +113,10 @@ const Form = () => {
                 value={formData.status}
                 onChange={(event) => setFormData({ ...formData, status: event.target.value })}
             >
-                {statusArr.map((status, index) => (
-                    <option key={index} value={status}>{status}</option>
+                {statusOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label} {/* ✅ Visar svenska namn i dropdown */}
+                    </option>
                 ))}
             </select>
             {errors.status && <p className="error">{errors.status}</p>}

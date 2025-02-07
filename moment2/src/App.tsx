@@ -1,15 +1,15 @@
-import { useState } from 'react'
 import './App.css'
 import Form from './components/Form'
+import Todos from './components/Todos'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-
-    <Form />
-
+    <main>
+      <h1>Todo App</h1>
+      <Form />
+      <Todos />
+    </main>
   )
 }
 
-export default App
+export default App;
