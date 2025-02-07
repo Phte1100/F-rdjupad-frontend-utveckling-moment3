@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import Form from "./Form";
 
 interface Todo {
     _id: string;
@@ -7,11 +8,12 @@ interface Todo {
     status: string;
 }
 
-const Todos = () => {
-    const [todos, setTodos] = useState<Todo[]>([]);
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+interface TodosProps {
+    todos: Todo[];
+    setTodos: (updateFunction: (prevTodos: Todo[]) => Todo[]) => void;
+}
 
+const Todos = ({ todos, setTodos }: TodosProps) => {  
     const getTodos = async () => {
         try {
             const response = await fetch('https://f-rdjupad-frontend-utveckling-moment-2.onrender.com/todos');
@@ -19,18 +21,20 @@ const Todos = () => {
                 throw new Error('Något gick fel vid hämtning');
             }
             const data = await response.json();
-            setTodos(data);
+            setTodos(() => data);
         } catch (error) {
-            setError("Kunde inte hämta todos");
             console.error("Error fetching todos:", error);
-        } finally {
-            setLoading(false);
         }
     };
 
     useEffect(() => {
         getTodos();
     }, []);
+
+    // ✅ Funktion för att uppdatera listan
+    const refreshTodos = () => {
+        getTodos();
+    };
 
     const deleteTodo = async (id: string) => {
         try {
@@ -42,73 +46,64 @@ const Todos = () => {
                 throw new Error("Misslyckades att ta bort todo");
             }
 
-            // 🔄 Uppdatera listan genom att filtrera bort den raderade todo
-            setTodos(prevTodos => prevTodos.filter(todo => todo._id !== id));
+            console.log("Todo raderad:", id);
+            refreshTodos();
         } catch (error) {
             console.error("Error deleting todo:", error);
         }
     };
 
-    // Filtrera todos efter status
-    const notStarted = todos.filter(todo => todo.status === "not_started");
-    const inProgress = todos.filter(todo => todo.status === "in_progress");
-    const completed = todos.filter(todo => todo.status === "completed");
-
-    // Funktion för att bestämma CSS-klass
-    const getStatusClass = (status: string) => {
-        switch (status) {
-            case "not_started":
-                return "todo-not-started";
-            case "in_progress":
-                return "todo-in-progress";
-            case "completed":
-                return "todo-completed";
-            default:
-                return "";
-        }
-    };
-
     const updateTodo = async (id: string, newStatus: string) => {
-        const updatedTodo = todos.find(todo => todo._id === id);
-        if (!updatedTodo) {
-            console.error("Todo not found");
-            return;
-        }
-    
-        const newTodo = { ...updatedTodo, status: newStatus };
-    
         try {
+            const updatedTodo = todos.find(todo => todo._id === id);
+            if (!updatedTodo) {
+                console.error("Todo not found");
+                return;
+            }
+    
+            // Skicka hela objektet
             const response = await fetch(`https://f-rdjupad-frontend-utveckling-moment-2.onrender.com/todos/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newTodo),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: updatedTodo.title,
+                    desc: updatedTodo.desc,
+                    status: newStatus, // ✅ Uppdaterar status
+                }),
             });
     
             if (!response.ok) {
                 throw new Error('Misslyckades att uppdatera Todo');
             }
     
-            console.log('Todo uppdaterad', newTodo);
-    
-            // Uppdatera state med den uppdaterade todo
-            setTodos(prevTodos => prevTodos.map(todo => (todo._id === id ? newTodo : todo)));
+            // Uppdatera listan direkt
+            refreshTodos();
         } catch (error) {
             console.error("PUT-fel:", error);
         }
     };
     
+    const notStarted = todos.filter(todo => todo.status === "not_started");
+    const inProgress = todos.filter(todo => todo.status === "in_progress");
+    const completed = todos.filter(todo => todo.status === "completed");
+
+    const getStatusClass = (status: string) => {
+        switch (status) {
+            case "not_started": return "todo-not-started";
+            case "in_progress": return "todo-in-progress";
+            case "completed": return "todo-completed";
+            default: return "";
+        }
+    };
 
     return (
         <section>
             <h2>Att göra</h2>
-            {error && <p className="error">{error}</p>}
-            {loading && <p className="loading">Hämtar data...</p>}
+            {/* ✅ Skickar `refreshTodos` till `Form.tsx` */}
+            <Form refreshTodos={refreshTodos} />
 
             <section className="todo-container">
                 <div className="todo-columns">
-                    
                     {/* Ej påbörjad */}
                     <div className="todo-column">
                         <h3>Ej påbörjad:</h3>
@@ -116,20 +111,13 @@ const Todos = () => {
                             <div key={todo._id} className={`todo-item ${getStatusClass(todo.status)}`}>
                                 <h4>{todo.title}</h4>
                                 <p>{todo.desc}</p>
-                                <form>
-                                    <label htmlFor="status">Ändra status:</label>
-                                    <select
-                                        name="status"
-                                        id="status"
-                                        defaultValue={todo.status}
-                                        onChange={(e) => updateTodo(todo._id, e.target.value)}
-                                    >
-                                        <option value="not_started">Ej påbörjad</option>
-                                        <option value="in_progress">Pågående</option>
-                                        <option value="completed">Avklarad</option>
-                                    </select>
-                                </form>
-                                <button type="submit" className="delete-btn" onClick={() => deleteTodo(todo._id)}>Radera</button>
+                                <label htmlFor="status">Ändra status:</label>
+                                <select defaultValue={todo.status} onChange={(e) => updateTodo(todo._id, e.target.value)}>
+                                    <option value="not_started">Ej påbörjad</option>
+                                    <option value="in_progress">Pågående</option>
+                                    <option value="completed">Avklarad</option>
+                                </select>
+                                <button className="delete-btn" onClick={() => deleteTodo(todo._id)}>Radera</button>
                             </div>
                         ))}
                     </div>
@@ -141,20 +129,13 @@ const Todos = () => {
                             <div key={todo._id} className={`todo-item ${getStatusClass(todo.status)}`}>
                                 <h4>{todo.title}</h4>
                                 <p>{todo.desc}</p>
-                                <form>
-                                    <label htmlFor="status">Ändra status:</label>
-                                    <select
-                                        name="status"
-                                        id="status"
-                                        defaultValue={todo.status}
-                                        onChange={(e) => updateTodo(todo._id, e.target.value)}
-                                    >
-                                        <option value="not_started">Ej påbörjad</option>
-                                        <option value="in_progress">Pågående</option>
-                                        <option value="completed">Avklarad</option>
-                                    </select>
-                                </form>
-                                <button type="submit" className="delete-btn" onClick={() => deleteTodo(todo._id)}>Radera</button>
+                                <label htmlFor="status">Ändra status:</label>
+                                <select defaultValue={todo.status} onChange={(e) => updateTodo(todo._id, e.target.value)}>
+                                    <option value="not_started">Ej påbörjad</option>
+                                    <option value="in_progress">Pågående</option>
+                                    <option value="completed">Avklarad</option>
+                                </select>
+                                <button className="delete-btn" onClick={() => deleteTodo(todo._id)}>Radera</button>
                             </div>
                         ))}
                     </div>
@@ -166,24 +147,16 @@ const Todos = () => {
                             <div key={todo._id} className={`todo-item ${getStatusClass(todo.status)}`}>
                                 <h4>{todo.title}</h4>
                                 <p>{todo.desc}</p>
-                                <form>
-                                    <label htmlFor="status">Ändra status:</label>
-                                    <select
-                                        name="status"
-                                        id="status"
-                                        defaultValue={todo.status}
-                                        onChange={(e) => updateTodo(todo._id, e.target.value)}
-                                    >
-                                        <option value="not_started">Ej påbörjad</option>
-                                        <option value="in_progress">Pågående</option>
-                                        <option value="completed">Avklarad</option>
-                                    </select>
-                                </form>
-                                <button type="submit" className="delete-btn" onClick={() => deleteTodo(todo._id)}>Radera</button>
+                                <label htmlFor="status">Ändra status:</label>
+                                <select defaultValue={todo.status} onChange={(e) => updateTodo(todo._id, e.target.value)}>
+                                    <option value="not_started">Ej påbörjad</option>
+                                    <option value="in_progress">Pågående</option>
+                                    <option value="completed">Avklarad</option>
+                                </select>
+                                <button className="delete-btn" onClick={() => deleteTodo(todo._id)}>Radera</button>
                             </div>
                         ))}
                     </div>
-
                 </div>
             </section>
         </section>

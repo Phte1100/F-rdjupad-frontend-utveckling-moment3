@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
 
-const Form = () => {
+const Form = ({ refreshTodos }: { refreshTodos: () => void }) => {  
 
     interface FormData {
         title: string;
@@ -15,54 +15,53 @@ const Form = () => {
         status?: string;
     }
 
-    // State för formulärdata
+    // ✅ State för formulärdata
     const [formData, setFormData] = useState<FormData>({
         title: '',
         desc: '',
         status: 'not_started'
     });
 
-    const statusArr = ['not_started', 'in_progress', 'completed'];
+    // ✅ State för valideringsfel
+    const [errors, setErrors] = useState<ErrorsData>({});
 
-    // Valideringsschema
+    // ✅ Valideringsschema
     const validationSchema = Yup.object({
         title: Yup.string().min(3, 'Minst 3 tecken krävs').required('Titel är obligatorisk'),
         desc: Yup.string().max(200, 'Max 200 tecken').required('Beskrivning är obligatorisk'),
         status: Yup.string().required('Status är obligatoriskt')
     });
 
-    // State för felmeddelanden
-    const [errors, setErrors] = useState<ErrorsData>({});
-
+    // ✅ Funktion för att hantera formulärinlämning
     const submitForm = async (event: React.FormEvent) => {
         event.preventDefault();
-    
+
         try {
             await validationSchema.validate(formData, { abortEarly: false });
-    
-            // Skicka POST-anrop till backend
+
             const response = await fetch('https://f-rdjupad-frontend-utveckling-moment-2.onrender.com/todos', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
-    
+
             if (!response.ok) {
                 throw new Error('Misslyckades att spara Todo');
             }
-    
-            console.log('Todo inlagd', formData);
-    
-            // Återställ formuläret efter lyckad POST
+
+            console.log('Todo inlagd:', formData);
+
+            // ✅ Uppdatera listan i `Todos.tsx`
+            refreshTodos();
+
+            // ✅ Återställ formuläret efter lyckad POST
             setFormData({
                 title: '',
                 desc: '',
                 status: 'not_started',
             });
-    
-            setErrors({});
+
+            setErrors({}); // Nollställ eventuella fel
         } catch (error) {
             if (error instanceof Yup.ValidationError) {
                 const validationErrors: ErrorsData = {};
@@ -76,13 +75,6 @@ const Form = () => {
             }
         }
     };
-
-    const statusOptions = [
-        { value: "not_started", label: "Ej påbörjad" },
-        { value: "in_progress", label: "Pågående" },
-        { value: "completed", label: "Avklarad" }
-    ];
-    
 
     return (
         <form onSubmit={submitForm}>
@@ -113,11 +105,9 @@ const Form = () => {
                 value={formData.status}
                 onChange={(event) => setFormData({ ...formData, status: event.target.value })}
             >
-                {statusOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                        {option.label} {/* ✅ Visar svenska namn i dropdown */}
-                    </option>
-                ))}
+                <option value="not_started">Ej påbörjad</option>
+                <option value="in_progress">Pågående</option>
+                <option value="completed">Avklarad</option>
             </select>
             {errors.status && <p className="error">{errors.status}</p>}
 
