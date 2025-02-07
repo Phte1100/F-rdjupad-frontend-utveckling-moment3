@@ -320,10 +320,10 @@ footer p {
 /* Ändringar som sker vid 1490px */
 
 @media (max-width: 1490px) {
-	.service-item1 img, .service-item2 img {
-		display: none;
+	.todo-columns{
+		flex-direction: column;
 	}
-}
+}	
 /* Ändringar som sker vid 1264px */
 
 @media (max-width: 1264px) {
