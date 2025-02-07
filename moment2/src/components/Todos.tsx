@@ -31,7 +31,7 @@ const Todos = ({ todos, setTodos }: TodosProps) => {
         getTodos();
     }, []);
 
-    // ✅ Funktion för att uppdatera listan
+    // Funktion för att uppdatera listan
     const refreshTodos = () => {
         getTodos();
     };
@@ -68,7 +68,7 @@ const Todos = ({ todos, setTodos }: TodosProps) => {
                 body: JSON.stringify({
                     title: updatedTodo.title,
                     desc: updatedTodo.desc,
-                    status: newStatus, // ✅ Uppdaterar status
+                    status: newStatus, // Uppdaterar status
                 }),
             });
     
@@ -99,7 +99,7 @@ const Todos = ({ todos, setTodos }: TodosProps) => {
     return (
         <section>
             <h2>Att göra</h2>
-            {/* ✅ Skickar `refreshTodos` till `Form.tsx` */}
+            {/* Skickar `refreshTodos` till `Form.tsx` */}
             <Form refreshTodos={refreshTodos} />
 
             <section className="todo-container">

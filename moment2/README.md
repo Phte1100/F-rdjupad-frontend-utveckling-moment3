@@ -1,50 +1,12 @@
-# React + TypeScript + Vite
+* Moment 2
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Detta är en Todo-app där användaren kan lägga till, uppdatera och ta bort todos. Appen är byggd med React på frontend och kommunicerar med en backend via API-anrop.
 
-Currently, two official plugins are available:
+Funktioner i appen:
+- Lägga till nya uppgifter via ett formulär
+- Visa uppgifter i tre kolumner: Ej påbörjad, Pågående, Avklarad
+- Ändra status på uppgifter genom en dropdown-meny
+- Ta bort uppgifter med en knapp
+- Automatisk uppdatering av listan vid förändringar
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+Frontend är byggt i React med TypeScript, och appen använder useState och useEffect för att hantera data. Backend hanterar uppgifterna via en databas och API-endpoints.

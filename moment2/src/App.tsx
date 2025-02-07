@@ -15,7 +15,7 @@ function App() {
   return (
     <main>
       <h1>Todo App</h1>
-      {/* ✅ Skickar `todos` och `setTodos` till `Todos.tsx` */}
+      {/* Skickar `todos` och `setTodos` till `Todos.tsx` */}
       <Todos todos={todos} setTodos={setTodos} />
     </main>
   );
