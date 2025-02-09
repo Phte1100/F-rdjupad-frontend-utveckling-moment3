@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Form from "./Form";
 
 interface Todo {
@@ -13,6 +13,8 @@ interface TodosProps {
     setTodos: (updateFunction: (prevTodos: Todo[]) => Todo[]) => void;
 }
 
+const [loading, setLoading] = useState<boolean>(true);
+
 const Todos = ({ todos, setTodos }: TodosProps) => {  
     const getTodos = async () => {
         try {
@@ -24,6 +26,8 @@ const Todos = ({ todos, setTodos }: TodosProps) => {
             setTodos(() => data);
         } catch (error) {
             console.error("Error fetching todos:", error);
+        } finally {
+            setLoading(false); // Sluta ladda oavsett om hämtningen lyckas eller misslyckas
         }
     };
 
@@ -101,7 +105,7 @@ const Todos = ({ todos, setTodos }: TodosProps) => {
             <h2>Att göra</h2>
             {/* Skickar `refreshTodos` till `Form.tsx` */}
             <Form refreshTodos={refreshTodos} />
-
+            {loading && <p className="loading">Hämtar data...</p>}
             <section className="todo-container">
                 <div className="todo-columns">
                     {/* Ej påbörjad */}
