@@ -4,12 +4,15 @@ function Banner({ title }: { title: string }) {
     <div
       className="banner"
       style={{
-        backgroundColor: 'lightblue',
+        backgroundImage: `url('/banner-image.jpg')`, // Använd bilden som bakgrund
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         width: '100%',
-        height: '100px',
+        height: 'auto',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
       }}
     >
       <h1>{title}</h1>

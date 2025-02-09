@@ -18,6 +18,7 @@ const [loading, setLoading] = useState<boolean>(true);
 const Todos = ({ todos, setTodos }: TodosProps) => {  
     const getTodos = async () => {
         try {
+            setLoading(true);
             const response = await fetch('https://f-rdjupad-frontend-utveckling-moment-2.onrender.com/todos');
             if (!response.ok) {
                 throw new Error('Något gick fel vid hämtning');
