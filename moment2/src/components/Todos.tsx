@@ -13,9 +13,8 @@ interface TodosProps {
     setTodos: (updateFunction: (prevTodos: Todo[]) => Todo[]) => void;
 }
 
-const [loading, setLoading] = useState<boolean>(true);
-
-const Todos = ({ todos, setTodos }: TodosProps) => {  
+const Todos = ({ todos, setTodos }: TodosProps) => {
+    const [loading, setLoading] = useState<boolean>(true);  
     const getTodos = async () => {
         try {
             setLoading(true);
