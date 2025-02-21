@@ -47,13 +47,13 @@ const LoginPage = () => {
     <h1 className="title is-1"></h1>
     <form onSubmit={handleSubmit} className="box">
       <div className="field">
-        <label className="label">Username</label>
+        <label className="label">Användarnamn</label>
         <div className="control">
           <input
             name="username"
             className="input"
             type="text"
-            placeholder="Enter your username"
+            placeholder="Skriv in ditt användarnamn"
             value={formData.username}
             onChange={handleChange}
             required
@@ -62,13 +62,13 @@ const LoginPage = () => {
       </div>
 
       <div className="field">
-        <label className="label">Password</label>
+        <label className="label">Lösenord</label>
         <div className="control">
           <input
             name="password"
             className="input"
             type="password"
-            placeholder="Enter your password"
+            placeholder="Skriv in ditt lösenord"
             value={formData.password}
             onChange={handleChange}
             required
@@ -79,7 +79,7 @@ const LoginPage = () => {
       <div className="field">
         <div className="control">
           <button className="button is-primary" type="submit">
-            Login
+            Logga in
           </button>
         </div>
       </div>

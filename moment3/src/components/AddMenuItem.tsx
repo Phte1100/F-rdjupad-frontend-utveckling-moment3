@@ -33,14 +33,76 @@ const AddMenuItem: React.FC = () => {
 
   return (
     <div>
-      <h2>Add Menu Item</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="name" value={menuItem.name} placeholder="Name" onChange={handleChange} required />
-        <input type="text" name="description" value={menuItem.description} placeholder="Description" onChange={handleChange} />
-        <input type="number" name="price" value={menuItem.price} placeholder="Price" onChange={handleChange} required />
-        <input type="text" name="category" value={menuItem.category} placeholder="Category" onChange={handleChange} />
-        <button type="submit">Add</button>
-      </form>
+<h2 className="title is-4">Lägg till i menyn</h2>
+<form onSubmit={handleSubmit}>
+  
+  <div className="field">
+    <label className="label">Namn</label>
+    <div className="control">
+      <input
+        type="text"
+        name="name"
+        value={menuItem.name}
+        placeholder="Namn på skapelsen"
+        onChange={handleChange}
+        required
+        className="input"
+      />
+    </div>
+  </div>
+
+  <div className="field">
+    <label className="label">Beskrivning</label>
+    <div className="control">
+      <input
+        type="text"
+        name="description"
+        value={menuItem.description}
+        placeholder="Beskrivning"
+        onChange={handleChange}
+        className="input"
+      />
+    </div>
+  </div>
+
+  <div className="field">
+    <label className="label">Pris</label>
+    <div className="control">
+      <input
+        type="number"
+        name="price"
+        value={menuItem.price}
+        onChange={handleChange}
+        required
+        className="input"
+      />
+    </div>
+  </div>
+
+  <div className="field">
+    <label className="label">Kategori</label>
+    <div className="control">
+      <input
+        type="text"
+        name="category"
+        value={menuItem.category}
+        placeholder="Kategori"
+        onChange={handleChange}
+        className="input"
+      />
+    </div>
+  </div>
+
+  <div className="field">
+    <div className="control">
+      <button type="submit" className="button is-primary is-fullwidth">
+        Lägg till
+      </button>
+    </div>
+  </div>
+
+</form>
+
     </div>
   );
 };

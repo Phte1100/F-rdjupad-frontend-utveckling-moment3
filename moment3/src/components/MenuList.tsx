@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { getAllMenuItems } from "../services/MenuService";
+
 
 interface MenuItem {
   _id: string;
   name: string;
   price: number;
+  description?: string;
+  category?: string;
 }
 
-const MenuList: React.FC = () => {
+const Menu: React.FC = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
   useEffect(() => {
-    fetchMenuItems();
+    fetchMenu();
   }, []);
 
-  const fetchMenuItems = async () => {
+  const fetchMenu = async () => {
     try {
       const response = await getAllMenuItems();
       setMenuItems(response.data);
@@ -25,16 +28,27 @@ const MenuList: React.FC = () => {
 
   return (
     <div>
-      <h2>Menu List</h2>
-      <ul>
-        {menuItems.map((item) => (
-          <li key={item._id}>
-            {item.name} - {item.price} SEK
-          </li>
-        ))}
-      </ul>
+      <h2 className="title">Meny</h2>
+      <table className="table is-fullwidth">
+        <thead>
+          <tr>
+            <th>Namn</th>
+            <th>Pris</th>
+            <th>Kategori</th>
+          </tr>
+        </thead>
+        <tbody>
+          {menuItems.map((item) => (
+            <tr key={item._id}>
+              <td>{item.name}</td>
+              <td>{item.price} kr</td>
+              <td>{item.category}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default MenuList;
+export default Menu;

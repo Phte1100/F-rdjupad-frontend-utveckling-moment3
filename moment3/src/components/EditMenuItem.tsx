@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import { getMenuItemById, updateMenuItem } from "../services/MenuService";
 
 interface MenuItem {
@@ -10,10 +9,13 @@ interface MenuItem {
   category?: string;
 }
 
-const EditMenuItem: React.FC = () => {
-  const { id } = useParams<{ id?: string }>(); //Gör `id` valfritt
-  const navigate = useNavigate();
+interface EditMenuItemProps {
+  menuItemId: string | null;
+  onClose: () => void;
+  refreshMenu: () => void;
+}
 
+const EditMenuItem: React.FC<EditMenuItemProps> = ({ menuItemId, onClose, refreshMenu }) => {
   const [menuItem, setMenuItem] = useState<MenuItem>({
     _id: "",
     name: "",
@@ -23,25 +25,17 @@ const EditMenuItem: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!id) {
-      console.error("Error: Missing ID for editing!");
-      return;
-    }
-    fetchMenuItem();
-  }, [id]); //Lägg till `id` som beroende
+    if (!menuItemId) return;
+    fetchMenuItem(menuItemId);
+  }, [menuItemId]);
 
-  const fetchMenuItem = async () => {
-    if (!id) return; //Om `id` är undefined, gör inget
+  const fetchMenuItem = async (id: string) => {
     try {
-      console.log(`Fetching menu item with ID: ${id}`);
       const response = await getMenuItemById(id);
-      console.log("API Response:", response.data);
-
       if (!response.data) {
         console.error("No data received from API!");
         return;
       }
-
       setMenuItem(response.data);
     } catch (error) {
       console.error("Error fetching menu item:", error);
@@ -52,37 +46,59 @@ const EditMenuItem: React.FC = () => {
     const { name, value } = e.target;
     setMenuItem((prev) => ({
       ...prev,
-      [name]: name === "price" ? parseFloat(value) || 0 : value, //Fixar konvertering av `price`
+      [name]: name === "price" ? parseFloat(value) || 0 : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!id) return; //Om `id` saknas, avbryt
+    if (!menuItem._id) return;
 
     try {
-      await updateMenuItem(id, menuItem);
-      navigate("/");
+      await updateMenuItem(menuItem._id, menuItem);
+      refreshMenu();
+      onClose();
     } catch (error) {
-      console.error(" Error updating menu item:", error);
+      console.error("Error updating menu item:", error);
     }
   };
 
   return (
-    <div>
-      <h2>Edit Menu Item</h2>
-      {menuItem._id ? (
-        <form onSubmit={handleSubmit}>
-          <input type="text" name="name" value={menuItem.name} onChange={handleChange} required />
-          <input type="text" name="description" value={menuItem.description} onChange={handleChange} />
-          <input type="number" name="price" value={menuItem.price} onChange={handleChange} required />
-          <input type="text" name="category" value={menuItem.category} onChange={handleChange} />
-          <button type="submit">Save</button>
-        </form>
-      ) : (
-        <p>Loading...</p> //Visa "Loading" om datan inte laddats än
-      )}
-    </div>
+    <form onSubmit={handleSubmit}>
+      <div className="field">
+        <label className="label">Namn</label>
+        <div className="control">
+          <input className="input" type="text" name="name" value={menuItem.name} onChange={handleChange} required />
+        </div>
+      </div>
+
+      <div className="field">
+        <label className="label">Beskrivning</label>
+        <div className="control">
+          <input className="input" type="text" name="description" value={menuItem.description} onChange={handleChange} />
+        </div>
+      </div>
+
+      <div className="field">
+        <label className="label">Pris</label>
+        <div className="control">
+          <input className="input" type="number" name="price" value={menuItem.price} onChange={handleChange} required />
+        </div>
+      </div>
+
+      <div className="field">
+        <label className="label">Kategori</label>
+        <div className="control">
+          <input className="input" type="text" name="category" value={menuItem.category} onChange={handleChange} />
+        </div>
+      </div>
+
+      <div className="field">
+        <div className="control">
+          <button className="button is-primary" type="submit">Spara ändring</button>
+        </div>
+      </div>
+    </form>
   );
 };
 
