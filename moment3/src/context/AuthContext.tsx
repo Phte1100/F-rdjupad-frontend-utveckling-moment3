@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, ReactNode } from "react";
+import { createContext, useState, useContext, ReactNode, useEffect } from "react";
 import { User, LoginCredentials, AuthResponse, AuthContextType } from "../types/auth.types";
 
 // Skapa context
@@ -10,12 +10,55 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
+
+    // Funktion för att validera token
+    const checkToken = async () => {
+        const token = localStorage.getItem("token");
+    
+        console.log("Läser token från localStorage:", token);
+    
+        if (!token) {
+            console.warn("Ingen token hittades!");
+            return;
+        }
+    
+        try {
+            const res = await fetch("https://backend-baserad-webbutveckling-moment-5.onrender.com/api/validate", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}` //Skickar token i rätt format
+                }
+            });
+    
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error(`Fel vid validering: ${errorText}`); //Logga fel från backend
+                throw new Error("Invalid token");
+            }
+    
+            const data = await res.json();
+            console.log("Token är giltig:", data.user); //Debug-logga
+            setUser(data.user);
+        } catch (error) {
+            console.error("Token validation failed:", error);
+            localStorage.removeItem("token");
+            setUser(null);
+            setToken(null);
+        }
+    };
+    
+
+    // Kör `checkToken()` automatiskt vid sidladdning
+    useEffect(() => {
+        checkToken();
+    }, [token]); // Körs när `token` ändras
 
     // Login-funktion
     const login = async (credentials: LoginCredentials) => {
         try {
-            const response = await fetch("https://projekt-webbtjanst-api-phte1100.onrender.com/login", {
+            const response = await fetch("https://backend-baserad-webbutveckling-moment-5.onrender.com/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -28,7 +71,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             }
 
             const data: AuthResponse = await response.json();
-
             localStorage.setItem("token", data.token);
             setUser(data.user);
             setToken(data.token);

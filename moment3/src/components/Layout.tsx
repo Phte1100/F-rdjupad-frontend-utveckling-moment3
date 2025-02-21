@@ -6,10 +6,14 @@ const Layout = () => {
       <>
       <Header />
       <main>
+        <div className="container">
         <Outlet />
+        </div>
       </main>
-      <footer>
+      <footer className="footer">
+        <div className="content has-text-centered">
         <p>&copy; 2025</p>
+        </div>
         </footer>
       </>
     );

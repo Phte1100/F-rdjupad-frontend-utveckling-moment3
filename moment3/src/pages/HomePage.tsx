@@ -1,8 +1,10 @@
+import MenuList from "../components/MenuList";
+
 const HomePage = () => {
   return (
     <div>
       <h1>Startsida</h1>
-      <p>Welcome to the Startsida!</p>
+      < MenuList />
     </div>
   );
 }
