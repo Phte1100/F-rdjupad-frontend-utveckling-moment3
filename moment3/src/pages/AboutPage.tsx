@@ -9,7 +9,7 @@ const AboutPage = () => {
 
   return (
     <div>
-      <h1>Hej, {user ? `${user.username}` : ""}</h1>
+      <h1 className="title is-1">Hej, {user ? `${user.username}` : ""}</h1>
       <AddMenuItem />
       <MenuListLoggedIn />
     </div>

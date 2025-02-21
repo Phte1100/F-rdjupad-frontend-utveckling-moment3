@@ -43,6 +43,8 @@ const LoginPage = () => {
 
 
   return (
+    <>
+    <h1 className="title is-1"></h1>
     <form onSubmit={handleSubmit} className="box">
       <div className="field">
         <label className="label">Username</label>
@@ -82,6 +84,7 @@ const LoginPage = () => {
         </div>
       </div>
     </form>
+    </>
   );
 };
 

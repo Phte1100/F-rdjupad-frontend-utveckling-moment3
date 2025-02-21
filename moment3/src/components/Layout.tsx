@@ -6,7 +6,7 @@ const Layout = () => {
       <>
       <Header />
       <main>
-        <div className="container">
+        <div className="container is-fluid">
         <Outlet />
         </div>
       </main>
