@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createMenuItem } from "../services/MenuService";
 
-const AddMenuItem: React.FC = () => {
+const AddMenuItem: React.FC = () => { //komponent för att lägga till menyobjekt
   const [menuItem, setMenuItem] = useState({
     name: "",
     description: "",
@@ -21,7 +21,7 @@ const AddMenuItem: React.FC = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => { //skickar formulärdata till backend
     e.preventDefault();
     try {
       await createMenuItem(menuItem, token);
@@ -31,7 +31,7 @@ const AddMenuItem: React.FC = () => {
     }
   };
 
-  return (
+  return ( //formulär för att lägga till menyobjekt
     <div>
 <h2 className="title is-4">Lägg till i menyn</h2>
 <form onSubmit={handleSubmit}>

@@ -1,9 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import AboutPage from "./pages/AboutPage";
+import CmsPage from "./pages/CmsPage";
 import LoginPage from "./pages/LoginPage";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import DetailPage from "./pages/DetailPage";
 
 const router = createBrowserRouter([
     {
@@ -15,16 +16,20 @@ const router = createBrowserRouter([
                 element: <HomePage />
             },
             {
-                path: "/about",
+                path: "/Cms",
                 element: (
                 <ProtectedRoute>
-                <AboutPage />
+                <CmsPage />
                 </ProtectedRoute>
             )
             },
             {
                 path: "/login",
                 element: <LoginPage />
+            },
+            {
+                path: "/menu/:id",
+                element: <DetailPage /> // Lägg till route för enskilda menyobjekt
             }
         ]
     }

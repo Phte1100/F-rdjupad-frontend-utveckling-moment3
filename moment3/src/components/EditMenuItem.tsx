@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getMenuItemById, updateMenuItem } from "../services/MenuService";
 
-interface MenuItem {
+interface MenuItem { //interface för menyobjekt
   _id: string;
   name: string;
   description?: string;
@@ -9,14 +9,14 @@ interface MenuItem {
   category?: string;
 }
 
-interface EditMenuItemProps {
+interface EditMenuItemProps { //interface för redigering av menyobjekt
   menuItemId: string | null;
   onClose: () => void;
   refreshMenu: () => void;
 }
 
 const EditMenuItem: React.FC<EditMenuItemProps> = ({ menuItemId, onClose, refreshMenu }) => {
-  const [menuItem, setMenuItem] = useState<MenuItem>({
+  const [menuItem, setMenuItem] = useState<MenuItem>({ //state för menyobjekt
     _id: "",
     name: "",
     description: "",
@@ -24,12 +24,12 @@ const EditMenuItem: React.FC<EditMenuItemProps> = ({ menuItemId, onClose, refres
     category: "",
   });
 
-  useEffect(() => {
+  useEffect(() => { //hämtar menyobjekt
     if (!menuItemId) return;
     fetchMenuItem(menuItemId);
   }, [menuItemId]);
 
-  const fetchMenuItem = async (id: string) => {
+  const fetchMenuItem = async (id: string) => { //funktion för att hämta menyobjekt
     try {
       const response = await getMenuItemById(id);
       if (!response.data) {
@@ -44,13 +44,13 @@ const EditMenuItem: React.FC<EditMenuItemProps> = ({ menuItemId, onClose, refres
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setMenuItem((prev) => ({
+    setMenuItem((prev) => ({ //uppdaterar menyobjekt
       ...prev,
       [name]: name === "price" ? parseFloat(value) || 0 : value,
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => { //skickar formulärdata till backend
     e.preventDefault();
     if (!menuItem._id) return;
 

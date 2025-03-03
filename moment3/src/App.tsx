@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AboutPage from "./pages/AboutPage";
+import AboutPage from "./pages/CmsPage";
 import HomePage from "./pages/HomePage";
-import MenuListLoggedIn from "./components/MenuListLoggedIn";
+import MenuList from "./components/MenuList";
+import DetailPage from "./pages/DetailPage";
+
 
 function App() {
   return (
@@ -9,7 +11,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/menu" element={<MenuListLoggedIn />} />
+        <Route path="/menu" element={<MenuList />} />
+        <Route path="/menu/:id" element={<DetailPage />} />
       </Routes>
     </Router>
   );

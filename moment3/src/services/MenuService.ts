@@ -18,7 +18,7 @@ interface NewMenuItem {
 }
 
 
-const getAllMenuItems = () => axios.get<MenuItem[]>(API_URL); // ✅ Lägg till typ för `data`
+const getAllMenuItems = () => axios.get<MenuItem[]>(API_URL);
 const getMenuItemById = (id: string) => axios.get<MenuItem>(`${API_URL}/${id}`);
 const createMenuItem = (menuItem: NewMenuItem, token: string | null) =>
   axios.post<MenuItem>(API_URL, menuItem, {

@@ -15,7 +15,7 @@ const LoginPage = () => {
   // kontrollera om användare
   useEffect(() => {
     if (user) {
-      navigate("/about");
+      navigate("/Cms");
     }
   }, [user, navigate]);
 
@@ -34,7 +34,7 @@ const LoginPage = () => {
     try {
         await login({ username: formData.username, password: formData.password });
 
-        navigate("/about");
+        navigate("/Cms");
 
     } catch (error) {
         setError("Inloggningen misslyckades");
